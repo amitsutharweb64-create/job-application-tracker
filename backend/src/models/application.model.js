@@ -32,6 +32,7 @@ const applicationSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: "applications",
   }
 );  
 

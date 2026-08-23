@@ -1,5 +1,6 @@
 import ApplicationForm from "./components/ApplicationForm";
 import ApplicationsTable from "./components/ApplicationsTable";
+import InterviewPrep from "./components/InterviewPrep";
 import Navbar from "./components/Navbar";
 import StatsCards from "./components/StatsCards";
 import { useState } from "react";
@@ -20,6 +21,10 @@ const pageContent = {
   stats: {
     title: "Statistics",
     subtitle: "See a quick overview of your application progress.",
+  },
+  prep: {
+    title: "Interview Prep",
+    subtitle: "Type a topic and practice questions for that interview.",
   },
 };
 
@@ -46,6 +51,7 @@ function App() {
           {activePage === "applications" && <ApplicationsTable />}
           {activePage === "add-application" && <ApplicationForm />}
           {activePage === "stats" && <StatsCards />}
+          {activePage === "prep" && <InterviewPrep />}
         </div>
       </main>
     </div>

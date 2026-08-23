@@ -5,7 +5,10 @@ const connectDB = async () => {
         throw new Error("MONGO_URL is missing in backend/src/.env");
     }
 
-    await mongoose.connect(process.env.MONGO_URL);
+    await mongoose.connect(process.env.MONGO_URL, {
+        dbName: process.env.MONGO_DB_NAME || "Application",
+        serverSelectionTimeoutMS: 4000,
+    });
     console.log("Database Connected");
 };
 

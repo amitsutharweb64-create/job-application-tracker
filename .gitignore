@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.vite/
+.vite-temp/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+backend/src/.env
+
+# Logs and OS/editor files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
