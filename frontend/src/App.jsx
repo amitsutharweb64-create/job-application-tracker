@@ -3,7 +3,8 @@ import ApplicationsTable from "./components/ApplicationsTable";
 import InterviewPrep from "./components/InterviewPrep";
 import Navbar from "./components/Navbar";
 import StatsCards from "./components/StatsCards";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getApplications } from "./api/applicationApi.js";
 
 const pageContent = {
   dashboard: {
@@ -30,7 +31,22 @@ const pageContent = {
 
 function App() {
   const [activePage, setActivePage] = useState("dashboard");
-  const currentPage = pageContent[activePage];
+  const [applications, setApplications] = useState([]);
+  const currentPage = pageContent[activePage];  
+
+  const fetchApplications = async () => {
+    try {
+      const response = await getApplications();
+      setApplications(response.data.data);    
+       
+    } catch (error) {
+      console.error("Applications fetch error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 transition-colors dark:bg-slate-950">
@@ -46,11 +62,11 @@ function App() {
             </p>
           </header>
 
-          {activePage === "dashboard" && <StatsCards />}
+          {activePage === "dashboard" && <StatsCards application={applications} />}
 
           {activePage === "applications" && <ApplicationsTable />}
           {activePage === "add-application" && <ApplicationForm />}
-          {activePage === "stats" && <StatsCards />}
+          {activePage === "stats" && <StatsCards application={applications} />}
           {activePage === "prep" && <InterviewPrep />}
         </div>
       </main>

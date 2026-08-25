@@ -16,7 +16,11 @@ const statusClass = {
 };
 function ApplicationsTable() {    
   // MongoDB se aayi applications yahan store hongi
-  const [applications, setApplications] = useState([]);
+  const [applications, setApplications] = useState([]);  
+
+  const [search, setSearch] = useState("");   
+  const [status, setStatus] = useState("All Status");
+  
   // Backend se applications lane ka function
   const fetchApplications = async () => {
     try {
@@ -42,7 +46,21 @@ function ApplicationsTable() {
     }
   };   
 
-  const [editingApplication, setEditingApplication] = useState(null);
+  const [editingApplication, setEditingApplication] = useState(null);    
+  
+  const filteredApplications = applications.filter((application) => {
+    const searchValue = search.toLowerCase();
+  
+    const matchesSearch =
+      application.company?.toLowerCase().includes(searchValue) ||
+      application.role?.toLowerCase().includes(searchValue);
+  
+    const matchesStatus =
+      status === "All Status" || application.status === status;
+  
+    return matchesSearch && matchesStatus;
+  }); 
+ 
   return (
     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm shadow-slate-100 transition-colors dark:border-slate-700 dark:bg-slate-900 dark:shadow-none">
 
@@ -52,9 +70,15 @@ function ApplicationsTable() {
           My Applications
         </h2>
 
-        <SearchFilters />
+        <SearchFilters 
+          search={search}
+          setSearch={setSearch}   
+          status={status}
+           setStatus={setStatus}
+        />
       </div>
 
+      
 
       {/* Table */}
       <div className="overflow-x-auto">
@@ -75,7 +99,7 @@ function ApplicationsTable() {
 
           <tbody className="divide-y divide-slate-100 text-sm text-slate-700 dark:divide-slate-800 dark:text-slate-300">
 
-            {applications.map((application) => (
+            {filteredApplications.map((application) => (
 
               <tr
                 key={application._id}
