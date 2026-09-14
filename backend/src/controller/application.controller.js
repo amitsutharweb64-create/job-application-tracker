@@ -32,12 +32,28 @@ export const createApplication = async (req, res) => {
 
 
 export const getApplications = async (req, res) => {
-  try {         
-    const application = await Application.find();
+  try {    
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10; 
+    const skip = (page - 1) * limit;    //age page 1 hai to skipp 0 and 2 hai to skipp 10
+
+        const application = await Application.find().skip(skip).limit(limit);
+
+    const totalApplications = await Application.countDocuments();
+    const totalPages = Math.ceil(totalApplications / limit);
+    
     return res.status(200).json({
       success: true,
       message: "Applications fetched successfully",
       data: application,
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalApplications,
+        totalapplication: totalApplications,
+      },
     })   
     
   } catch (error) {
@@ -47,6 +63,7 @@ export const getApplications = async (req, res) => {
        });      
   }
 };
+
 export const updateApplication = async (req, res) => {
   try {  
     const { id } = req.params; 

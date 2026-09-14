@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { createApplication } from "../api/applicationApi.js";
 
 const inputClass =
@@ -21,7 +22,7 @@ function ApplicationForm() {
     role: "",
     status: "Applied",
     appliedDate: "",
-    notes: "",
+    notes: "",        
   });     
 
   const handleChange = (event) => {
@@ -36,7 +37,7 @@ function ApplicationForm() {
 
     try {
       const response = await createApplication(formData);
-      alert(response.data.message);
+      toast.success(response.data.message);
       setFormData({
         company: "",
         role: "",
@@ -45,8 +46,9 @@ function ApplicationForm() {
         notes: "",
       });
     } catch (error) {
-      alert(error.response?.data?.message ||
-        "Application save nahi hui");
+      toast.error(
+        error.response?.data?.message || "Application save nahi hui"
+      );
     }
   };
 

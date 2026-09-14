@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", getApplications);
+router.get("/", getApplications); 
 
 router.get("/:id", getApplicationById);
 

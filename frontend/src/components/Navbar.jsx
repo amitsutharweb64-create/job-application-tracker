@@ -5,7 +5,6 @@ import {
   LayoutDashboard,
   Moon,
   Plus,
-  Sparkles,
   Sun,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -14,7 +13,6 @@ const navItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "applications", label: "Applications", icon: Files },
   { id: "add-application", label: "Add Application", icon: Plus },
-  { id: "prep", label: "Interview Prep", icon: Sparkles },
   { id: "stats", label: "Stats", icon: BarChart3 },
 ];
 
