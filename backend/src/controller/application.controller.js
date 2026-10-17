@@ -11,6 +11,7 @@ export const createApplication = async (req, res) => {
       });
     }
     const application = await Application.create({
+      user: req.user.id,
       company,
       role,
       status,
@@ -38,9 +39,9 @@ export const getApplications = async (req, res) => {
     const limit = Number(req.query.limit) || 10; 
     const skip = (page - 1) * limit;    //age page 1 hai to skipp 0 and 2 hai to skipp 10
 
-        const application = await Application.find().skip(skip).limit(limit);
+        const application = await Application.find({ user: req.user.id }).skip(skip).limit(limit);
 
-    const totalApplications = await Application.countDocuments();
+    const totalApplications = await Application.countDocuments({ user: req.user.id });
     const totalPages = Math.ceil(totalApplications / limit);
     
     return res.status(200).json({
@@ -68,7 +69,7 @@ export const updateApplication = async (req, res) => {
   try {  
     const { id } = req.params; 
 
-    const application = await Application.findByIdAndUpdate(id, req.body,
+    const application = await Application.findOneAndUpdate({ _id: id, user: req.user.id }, req.body,
       { new: true, runValidators: true });
     
     if (!application) {
@@ -94,7 +95,7 @@ export const deleteApplication = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const application = await Application.findByIdAndDelete(id);
+    const application = await Application.findOneAndDelete({ _id: id, user: req.user.id });
 
     if (!application) {
       return res.status(404).json({
@@ -129,8 +130,8 @@ export const updateApplicationStatus = async (req, res) => {
       });
     }
 
-    const application = await Application.findByIdAndUpdate(
-      id,
+    const application = await Application.findOneAndUpdate(
+      { _id: id, user: req.user.id },
       { status },
       {
         new: true,
@@ -162,7 +163,7 @@ export const updateApplicationStatus = async (req, res) => {
 export const getApplicationById = async (req, res) => {
   try {
     const id = req.params.id?.trim();   
-    const application = await Application.findById(id);  
+    const application = await Application.findOne({ _id: id, user: req.user.id });  
     if (!application) {
       return res.status(404).json({
         success: false,

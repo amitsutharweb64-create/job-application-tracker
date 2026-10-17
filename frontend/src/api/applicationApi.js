@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const apiOrigin = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+
 const API = axios.create({
-  baseURL: "/api/application",
+  baseURL: `${apiOrigin}/api/application`,
+  withCredentials: true,
 });
 
 export const getApplications = (page =1  ,limit = 10) => API.get(`/?page=${page}&limit=${limit}`); 
@@ -10,6 +13,4 @@ export const deleteApplication = (id) => API.delete(`/delete/${id}`);
 export const updateApplication = (id, data) => API.put(`/update/${id}`, data);
 
 export default API;
-
-
 

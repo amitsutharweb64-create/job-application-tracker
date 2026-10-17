@@ -9,8 +9,39 @@ import cookieParser from "cookie-parser";
 dotenv.config({ path: new URL("./.env", import.meta.url) });
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
+const clientOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const isLocalDevelopmentOrigin = (origin) =>
+  !isProduction && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
-app.use(cors());
+if (isProduction && !process.env.CLIENT_ORIGIN) {
+  throw new Error("CLIENT_ORIGIN is required in production");
+}
+
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is required");
+}
+
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Requests without an Origin header (health checks, curl) are not browser CORS requests.
+      if (!origin || clientOrigins.includes(origin) || isLocalDevelopmentOrigin(origin)) {
+        return callback(null, true);
+      }
+      console.warn(`Blocked CORS origin: ${origin}`);
+      return callback(new Error("Origin is not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "100kb" }));
 app.use(cookieParser());
 

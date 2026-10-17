@@ -6,6 +6,8 @@ import {
   Moon,
   Plus,
   Sun,
+  LogOut,
+  UserRound,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -14,9 +16,10 @@ const navItems = [
   { id: "applications", label: "Applications", icon: Files },
   { id: "add-application", label: "Add Application", icon: Plus },
   { id: "stats", label: "Stats", icon: BarChart3 },
+  { id: "profile", label: "Profile", icon: UserRound },
 ];
 
-function Navbar({ activePage, onNavigate }) {
+function Navbar({ activePage, onNavigate, user, onLogout }) {
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("job-tracker-theme");
     return savedTheme === "dark" ? "dark" : "light";
@@ -41,7 +44,10 @@ function Navbar({ activePage, onNavigate }) {
           </h1>
         </div>
 
-        <div className="ml-3 flex shrink-0 items-center rounded-full border border-slate-200 bg-white p-0.5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <div className="ml-3 flex shrink-0 items-center gap-2">
+          <span className="hidden max-w-32 truncate text-sm font-medium text-slate-600 dark:text-slate-300 sm:block">{user?.name}</span>
+          <button type="button" onClick={onLogout} className="grid h-8 w-8 place-items-center rounded-full text-slate-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/15" aria-label="Sign out"><LogOut size={16} /></button>
+          <div className="flex rounded-full border border-slate-200 bg-white p-0.5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
           <button
             type="button"
             aria-label="Use light theme"
@@ -68,6 +74,7 @@ function Navbar({ activePage, onNavigate }) {
           >
             <Moon size={14} />
           </button>
+          </div>
         </div>
       </header>
 

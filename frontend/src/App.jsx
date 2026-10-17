@@ -5,6 +5,10 @@ import StatsCards from "./components/StatsCards";
 import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import { getApplications } from "./api/applicationApi.js";
+import AuthPage from "./components/AuthPage";
+import { getCurrentUser, signOut } from "./api/authApi";
+import LandingPage from "./components/LandingPage";
+import ProfilePage from "./components/ProfilePage";
 
 const pageContent = {
   dashboard: {
@@ -23,11 +27,18 @@ const pageContent = {
     title: "Statistics",
     subtitle: "See a quick overview of your application progress.",
   },
+  profile: {
+    title: "Profile",
+    subtitle: "Manage your personal account details.",
+  },
 };
 
 function App() {
   const [activePage, setActivePage] = useState("dashboard");
   const [applications, setApplications] = useState([]);
+  const [user, setUser] = useState(null);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [screen, setScreen] = useState("landing");
   const currentPage = pageContent[activePage];  
 
   const fetchApplications = async () => {
@@ -41,14 +52,43 @@ function App() {
   };
 
   useEffect(() => {
-    fetchApplications();
+    getCurrentUser()
+      .then((response) => {
+        setUser(response.data.user);
+        setScreen("dashboard");
+      })
+      .catch(() => setUser(null))
+      .finally(() => setCheckingSession(false));
   }, []);
+
+  useEffect(() => {
+    if (user) fetchApplications();
+  }, [user]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+    } finally {
+      setApplications([]);
+      setUser(null);
+      setScreen("landing");
+    }
+  };
+
+  const handleAuthenticated = (authenticatedUser) => {
+    setUser(authenticatedUser);
+    setScreen("dashboard");
+  };
+
+  if (checkingSession) return <div className="grid min-h-screen place-items-center bg-slate-50 text-sm font-medium text-slate-500">Loading your workspace...</div>;
+  if (!user && screen === "landing") return <><Toaster richColors position="top-right" closeButton /><LandingPage onSignIn={() => setScreen("login")} onSignUp={() => setScreen("signup")} /></>;
+  if (!user) return <><Toaster richColors position="top-right" closeButton /><AuthPage onAuthenticated={handleAuthenticated} onBack={() => setScreen("landing")} initialSignUp={screen === "signup"} /></>;
 
   return (   
     <>
     <Toaster richColors position="top-right" closeButton />
     <div className="min-h-screen bg-slate-50 transition-colors dark:bg-slate-950">
-      <Navbar activePage={activePage} onNavigate={setActivePage} />
+      <Navbar activePage={activePage} onNavigate={setActivePage} user={user} onLogout={handleLogout} />
       <main className="px-4 pb-8 pt-[145px] sm:px-6 md:ml-56 md:px-7 md:pt-24">
         <div className="mx-auto max-w-7xl space-y-4">
           <header>
@@ -65,6 +105,7 @@ function App() {
           {activePage === "applications" && <ApplicationsTable />}
           {activePage === "add-application" && <ApplicationForm />}
           {activePage === "stats" && <StatsCards application={applications} />}
+          {activePage === "profile" && <ProfilePage user={user} onUpdated={setUser} />}
         </div>
       </main>
       </div>  

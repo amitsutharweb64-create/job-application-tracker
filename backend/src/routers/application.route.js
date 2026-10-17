@@ -8,8 +8,11 @@ import {
   deleteApplication,
   updateApplicationStatus,
 } from "../controller/application.controller.js";
+import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
+
+router.use(protect);
 
 router.get("/", getApplications); 
 
