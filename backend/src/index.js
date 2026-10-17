@@ -4,7 +4,9 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import applicationRouter from "./routers/application.route.js";
 import authRouter from "./routers/auth.route.js";
-import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";import dns from "node:dns";
+
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 dotenv.config({ path: new URL("./.env", import.meta.url) });
 
