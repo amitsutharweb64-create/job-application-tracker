@@ -9,16 +9,15 @@ dotenv.config({ path: new URL("./.env", import.meta.url) });
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
-const clientOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:5173")
+const defaultClientOrigin = isProduction
+  ? "https://job-application-tracker-s5qh.vercel.app"
+  : "http://localhost:5173";
+const clientOrigins = (process.env.CLIENT_ORIGIN || defaultClientOrigin)
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
 const isLocalDevelopmentOrigin = (origin) =>
   !isProduction && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-
-if (isProduction && !process.env.CLIENT_URL) {
-  throw new Error("CLIENT_ORIGIN is required in production");
-}
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET environment variable is required");
