@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const apiOrigin = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+const apiOrigin = (
+  import.meta.env.VITE_API_URL || "https://job-application-tracker-rho-seven.vercel.app"
+).replace(/\/$/, "");
 
 const API = axios.create({
   baseURL: `${apiOrigin}/api/application`,
@@ -13,4 +15,3 @@ export const deleteApplication = (id) => API.delete(`/delete/${id}`);
 export const updateApplication = (id, data) => API.put(`/update/${id}`, data);
 
 export default API;
-
