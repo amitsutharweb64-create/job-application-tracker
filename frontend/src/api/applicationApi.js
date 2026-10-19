@@ -1,8 +1,6 @@
 import axios from "axios";
 
-const apiOrigin = (
-  import.meta.env.VITE_API_URL || "https://job-application-tracker-rho-seven.vercel.app"
-).replace(/\/$/, "");
+const apiOrigin = "https://job-application-tracker-rho-seven.vercel.app";
 
 const API = axios.create({
   baseURL: `${apiOrigin}/api/application`,
