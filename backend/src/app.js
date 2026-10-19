@@ -16,7 +16,7 @@ const clientOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:5173")
 const isLocalDevelopmentOrigin = (origin) =>
   !isProduction && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
-if (isProduction && !process.env.CLIENT_ORIGIN) {
+if (isProduction && !process.env.CLIENT_URL) {
   throw new Error("CLIENT_ORIGIN is required in production");
 }
 
